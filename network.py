@@ -23,17 +23,13 @@ def send_payload_to_bulbs(payload: dict) -> List[Tuple[str, dict]]:
             <response: dict>
         )
     ]
-
-    The string "%BULB_MAC_ADDR%" will be substituted with the appropriate MAC.
     """
     sock = _get_socket()
 
     responses = []
 
-    for bulb_record in config.get_bulb_info():
-        payload_str = json.dumps(payload).replace("%BULB_MAC_ADDR%", bulb_record["mac"])
-
-        sock.sendto(payload_str.encode(), (bulb_record["ip"], config.get_bulb_port()))
+    for bulb_ip in config.get_bulb_ips():
+        sock.sendto(json.dumps(payload).encode(), (bulb_ip, config.get_bulb_port()))
 
         response = sock.recvfrom(8192)
         response_ip = response[1][0]

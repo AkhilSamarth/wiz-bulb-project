@@ -5,8 +5,8 @@ with open("config.json") as f:
     CONFIG = json.load(f)
 
 
-def get_bulb_info() -> list:
-    return CONFIG["bulbInfo"]
+def get_bulb_ips() -> list:
+    return CONFIG["bulbIps"]
 
 
 def get_bulb_port() -> int:
