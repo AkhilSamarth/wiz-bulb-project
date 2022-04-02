@@ -23,7 +23,7 @@ def _construct_set_payload(params: dict) -> dict:
     return payload
 
 
-def set_bulb_temp_and_brightness(temp, brightness):
+def set_temp_and_brightness(temp: int, brightness: int) -> None:
     temp = _constrain_value(temp, 2200, 6000)
     brightness = _constrain_value(brightness, 10, 100)
 
@@ -31,6 +31,15 @@ def set_bulb_temp_and_brightness(temp, brightness):
         "state": True,
         "temp": temp,
         "dimming": brightness
+    }
+    payload = _construct_set_payload(params)
+
+    network.send_payload_to_bulbs(payload)
+
+
+def set_state(state: bool) -> None:
+    params = {
+        "state": state
     }
     payload = _construct_set_payload(params)
 
