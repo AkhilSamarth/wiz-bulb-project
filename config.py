@@ -7,3 +7,7 @@ with open("config.json") as f:
 
 def get_bulb_ips() -> list:
     return CONFIG["bulbIps"]
+
+
+def get_socket_port() -> int:
+    return CONFIG["socketPort"]
