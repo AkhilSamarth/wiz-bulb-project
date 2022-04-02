@@ -12,11 +12,6 @@ def _get_socket() -> socket.socket:
     return sock
 
 
-def _close_socket(sock: socket.socket) -> None:
-    sock.shutdown(socket.SHUT_RDWR)
-    sock.close()
-
-
 def send_payload_to_bulbs(payload: dict) -> None:
     """Function to send a JSON payload to the bulbs.
 
@@ -27,6 +22,6 @@ def send_payload_to_bulbs(payload: dict) -> None:
     for bulb_record in config.get_bulb_info():
         payload_str = json.dumps(payload).replace("%BULB_MAC_ADDR%", bulb_record["mac"])
 
-        sock.sendto(payload_str, (bulb_record["ip"], config.get_bulb_port()))
+        sock.sendto(payload_str.encode(), (bulb_record["ip"], config.get_bulb_port()))
 
-    _close_socket(sock)
+    sock.close()
