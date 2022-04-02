@@ -44,6 +44,3 @@ def send_payload_to_bulbs(payload: dict) -> List[Tuple[str, dict]]:
     sock.close()
 
     return responses
-
-
-print(send_payload_to_bulbs({"method":"getPilot","params":{}}))
