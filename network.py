@@ -20,12 +20,12 @@ def _close_socket(sock: socket.socket) -> None:
 def send_payload_to_bulbs(payload: dict) -> None:
     """Function to send a JSON payload to the bulbs.
 
-    The string "{bulb_mac_addr}" will be substituted with the appropriate MAC.
+    The string "%BULB_MAC_ADDR%" will be substituted with the appropriate MAC.
     """
     sock = _get_socket()
 
     for bulb_record in config.get_bulb_info():
-        payload_str = json.dumps(payload).format(bulb_mac_addr=bulb_record["mac"])
+        payload_str = json.dumps(payload).replace("%BULB_MAC_ADDR%", bulb_record["mac"])
 
         sock.sendto(payload_str, (bulb_record["ip"], config.get_bulb_port()))
 
