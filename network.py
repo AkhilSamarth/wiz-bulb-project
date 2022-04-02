@@ -13,7 +13,7 @@ def _get_socket() -> socket.socket:
 
 
 def _close_socket(sock: socket.socket) -> None:
-    sock.shutdown()
+    sock.shutdown(socket.SHUT_RDWR)
     sock.close()
 
 
