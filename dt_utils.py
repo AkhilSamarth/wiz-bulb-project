@@ -20,7 +20,7 @@ def _get_dst_normalized_sunset_times() -> List[dt.datetime]:
                 adjusted_hour = 23
 
             sunset_times[i] = sunset_dt.replace(hour=adjusted_hour)
-    
+
     return sunset_times
 
 
@@ -61,7 +61,7 @@ def _get_sunset_time(date: dt.date) -> dt.time:
 
     if date_with_time >= dt_start_dt and date_with_time < dt_end_dt:
         sunset_time = sunset_time.replace(hour=sunset_time.hour+1)
-    
+
     return sunset_time
 
 
