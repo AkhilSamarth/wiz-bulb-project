@@ -1,5 +1,6 @@
-import controller
+import config
 
 
 if __name__ == "__main__":
-    controller.set_state(True)
+    print(config.get_dst_start_date())
+    print(config.get_dst_end_date())

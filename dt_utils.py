@@ -1,7 +1,27 @@
 """Utility functions relating to datetime logic."""
 import datetime as dt
+from typing import List
 
 import config
+
+
+def _get_dst_normalized_sunset_times() -> List[dt.datetime]:
+    """Returns sunset_times from config, but with all times in standard time instead of daylight time."""
+    sunset_times = config.get_sunset_times()
+
+    # add a time component of midnight for easy comparison
+    dt_start_dt = dt.datetime.combine(config.get_dst_start_date(), dt.time(0, 0, 0))
+    dt_end_dt = dt.datetime.combine(config.get_dst_end_date(), dt.time(0, 0, 0))
+
+    for i, sunset_dt in enumerate(sunset_times):
+        if sunset_dt >= dt_start_dt and sunset_dt <= dt_end_dt:
+            adjusted_hour = sunset_dt.hour - 1
+            if adjusted_hour == -1:
+                adjusted_hour = 23
+
+            sunset_times[i] = sunset_dt.replace(hour=adjusted_hour)
+    
+    return sunset_times
 
 
 def _get_sunset_time(date: dt.date) -> dt.time:
