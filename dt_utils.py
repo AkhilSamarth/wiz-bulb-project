@@ -14,7 +14,7 @@ def _get_dst_normalized_sunset_times() -> List[dt.datetime]:
     dt_end_dt = dt.datetime.combine(config.get_dst_end_date(), dt.time(0, 0, 0))
 
     for i, sunset_dt in enumerate(sunset_times):
-        if sunset_dt >= dt_start_dt and sunset_dt <= dt_end_dt:
+        if sunset_dt >= dt_start_dt and sunset_dt < dt_end_dt:
             adjusted_hour = sunset_dt.hour - 1
             if adjusted_hour == -1:
                 adjusted_hour = 23
@@ -26,7 +26,7 @@ def _get_dst_normalized_sunset_times() -> List[dt.datetime]:
 
 def _get_sunset_time(date: dt.date) -> dt.time:
     """Returns the (approximate) sunset time for the given month and day (year is ignored)."""
-    sunset_times = config.get_sunset_times()
+    sunset_times = _get_dst_normalized_sunset_times()
     current_year = dt.datetime.now().year
 
     date = date.replace(year=current_year)
@@ -51,4 +51,15 @@ def _get_sunset_time(date: dt.date) -> dt.time:
     bucket_end_time = bucket_end_dt.replace(year=1900, month=1, day=1)
     time_delta = bucket_end_time - bucket_start_time
 
-    return (bucket_start_time + time_delta * (delta_days_to_start / bucket_width_days)).time()
+    # sunset time is linearly interpolated from bucket start and end times
+    sunset_time = (bucket_start_time + time_delta * (delta_days_to_start / bucket_width_days)).time()
+
+    # correct for dst if needed
+    dt_start_dt = dt.datetime.combine(config.get_dst_start_date(), dt.time(0, 0, 0))
+    dt_end_dt = dt.datetime.combine(config.get_dst_end_date(), dt.time(0, 0, 0))
+    date_with_time = dt.datetime.combine(date, dt.time(0, 0, 0))
+
+    if date_with_time >= dt_start_dt and date_with_time < dt_end_dt:
+        sunset_time = sunset_time.replace(hour=sunset_time.hour+1)
+    
+    return sunset_time
