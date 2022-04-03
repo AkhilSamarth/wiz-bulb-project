@@ -63,3 +63,14 @@ def _get_sunset_time(date: dt.date) -> dt.time:
         sunset_time = sunset_time.replace(hour=sunset_time.hour+1)
     
     return sunset_time
+
+
+def get_sunset_relative_time() -> dt.timedelta:
+    """Returns the current time before/after sunset."""
+    current_date = dt.datetime.now().date()
+
+    sunset_time = _get_sunset_time(current_date)
+
+    sunset_time_with_date = dt.datetime.combine(current_date, sunset_time)
+
+    return dt.datetime.now() - sunset_time_with_date
