@@ -65,7 +65,7 @@ def _get_sunset_time(date: dt.date) -> dt.time:
     return sunset_time
 
 
-def get_sunset_relative_time() -> dt.timedelta:
+def _get_sunset_relative_time() -> dt.timedelta:
     """Returns the current time before/after sunset."""
     current_date = dt.datetime.now().date()
 
@@ -74,3 +74,41 @@ def get_sunset_relative_time() -> dt.timedelta:
     sunset_time_with_date = dt.datetime.combine(current_date, sunset_time)
 
     return dt.datetime.now() - sunset_time_with_date
+
+
+def _get_light_config_timeline() -> list:
+    """Reads config and returns a list of dicts sorted by time.
+
+    Each dict contains: {"time": dt.time, "temp": int, "brightness": int}"""
+    light_config = config.get_light_config()
+
+    # get today's sunset time
+    today_date = dt.datetime.now().date()
+    sunset_time = _get_sunset_time(today_date)
+
+    timeline = []
+    for record in light_config:
+        if "sunsetDelta" in record["time"].keys():
+            sunset_delta = dt.timedelta(minutes=record["time"]["sunsetDelta"])
+
+            timeline_record = {
+                "time": sunset_time + sunset_delta,
+                "temp": record["light"]["temp"],
+                "brightness": record["brightness"]["brightness"]
+            }
+
+            timeline.append(timeline_record)
+        elif "exact" in record["time"].keys():
+            exact_time = dt.datetime.strptime(record["time"]["exact"], "%H:%M").time()
+
+            timeline_record = {
+                "time": exact_time,
+                "temp": record["light"]["temp"],
+                "brightness": record["light"]["brightness"]
+            }
+
+            timeline.append(timeline_record)
+
+    timeline.sort(key=lambda record: record["time"])
+
+    return timeline

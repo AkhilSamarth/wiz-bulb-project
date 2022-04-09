@@ -54,3 +54,7 @@ def get_dst_end_date() -> dt.date:
     dst_record = _get_current_year_dst_record()
 
     return dt.datetime.strptime(dst_record["end"], "%m/%d").date().replace(year=dst_record["year"])
+
+
+def get_light_config() -> list:
+    return CONFIG["lightConfig"]
