@@ -1,6 +1,6 @@
 """Utility functions relating to datetime logic."""
 import datetime as dt
-from typing import List
+from typing import List, Optional
 
 import config
 
@@ -65,17 +65,6 @@ def _get_sunset_time(date: dt.date) -> dt.time:
     return sunset_time
 
 
-def _get_sunset_relative_time() -> dt.timedelta:
-    """Returns the current time before/after sunset."""
-    current_date = dt.datetime.now().date()
-
-    sunset_time = _get_sunset_time(current_date)
-
-    sunset_time_with_date = dt.datetime.combine(current_date, sunset_time)
-
-    return dt.datetime.now() - sunset_time_with_date
-
-
 def _get_light_config_timeline() -> list:
     """Reads config and returns a list of dicts sorted by time.
 
@@ -112,3 +101,44 @@ def _get_light_config_timeline() -> list:
     timeline.sort(key=lambda record: record["time"])
 
     return timeline
+
+
+def get_current_light_config() -> Optional[dict]:
+    """Returns the temp and brightness based on current time and the light config timeline.
+    If no config is defined for the current time (i.e. current time < first config time or current time > last config time), returns None.
+
+    Return format: {"temp": int, "brightness": int}
+    """
+    light_config_timeline = _get_light_config_timeline()
+
+    current_time = dt.datetime.now().time()
+
+    if current_time < light_config_timeline[0]["time"]:
+        return None
+
+    if current_time >= light_config_timeline[-1]["time"]:
+        return None
+
+    # get correct "bucket" from timeline
+    for i, record in enumerate(light_config_timeline):
+        if current_time < record["time"]:
+            bucket_start = light_config_timeline[i - 1]
+            bucket_end = record
+
+            break
+
+    # interpolate light data
+    bucket_end_dt = dt.datetime.combine(date=dt.date(1900, 1, 1), time=bucket_end["time"])
+    bucket_start_dt = dt.datetime.combine(date=dt.date(1900, 1, 1), time=bucket_start["time"])
+    current_time_dt = dt.datetime.combine(date=dt.date(1900, 1, 1), time=current_time)
+
+    bucket_size = bucket_end_dt - bucket_start_dt
+    interp_factor = (current_time_dt - bucket_start_dt).seconds / bucket_size.seconds
+
+    bucket_temp_delta = bucket_end["temp"] - bucket_start["temp"]
+    bucket_brightness_delta = bucket_end["brightness"] - bucket_start["brightness"]
+
+    return {
+        "temp": bucket_temp_delta * interp_factor + bucket_start["temp"],
+        "brightness": bucket_brightness_delta * interp_factor + bucket_start["brightness"]
+    }

@@ -141,6 +141,15 @@
                 "temp": 2700,
                 "brightness": 10
             }
+        },
+        {
+            "time": {
+                "exact": "23:10"
+            },
+            "light": {
+                "temp": 2700,
+                "brightness": 10
+            }
         }
     ]
 }
