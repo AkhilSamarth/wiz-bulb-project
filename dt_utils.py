@@ -84,7 +84,7 @@ def _get_light_config_timeline() -> list:
 
     # get today's sunset time
     today_date = dt.datetime.now().date()
-    sunset_time = _get_sunset_time(today_date)
+    sunset_dt = dt.datetime.combine(date=today_date, time=_get_sunset_time(today_date))
 
     timeline = []
     for record in light_config:
@@ -92,9 +92,9 @@ def _get_light_config_timeline() -> list:
             sunset_delta = dt.timedelta(minutes=record["time"]["sunsetDelta"])
 
             timeline_record = {
-                "time": sunset_time + sunset_delta,
+                "time": (sunset_dt + sunset_delta).time(),
                 "temp": record["light"]["temp"],
-                "brightness": record["brightness"]["brightness"]
+                "brightness": record["light"]["brightness"]
             }
 
             timeline.append(timeline_record)
