@@ -1,4 +1,5 @@
 """Functions for controlling bulbs."""
+import dt_utils
 import network
 
 
@@ -44,3 +45,11 @@ def set_state(state: bool) -> None:
     payload = _construct_set_payload(params)
 
     network.send_payload_to_bulbs(payload)
+
+
+def set_bulb_based_on_timeline() -> None:
+    """Sets the lightbulbs based on the timeline config."""
+    current_light_config = dt_utils.get_current_light_config()
+
+    if current_light_config:
+        set_temp_and_brightness(**current_light_config)

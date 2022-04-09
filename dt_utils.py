@@ -139,6 +139,6 @@ def get_current_light_config() -> Optional[dict]:
     bucket_brightness_delta = bucket_end["brightness"] - bucket_start["brightness"]
 
     return {
-        "temp": bucket_temp_delta * interp_factor + bucket_start["temp"],
-        "brightness": bucket_brightness_delta * interp_factor + bucket_start["brightness"]
+        "temp": int(bucket_temp_delta * interp_factor + bucket_start["temp"]),
+        "brightness": int(bucket_brightness_delta * interp_factor + bucket_start["brightness"])
     }
