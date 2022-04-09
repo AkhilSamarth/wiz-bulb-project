@@ -1,7 +1,7 @@
 {
     "bulbIps": [
-        "192.168.1.152",
-        "192.168.1.151"
+        "10.0.0.25",
+        "10.0.0.26"
     ],
     "bulbPort": 38899,
     "socketPort": 24234,
@@ -85,6 +85,62 @@
             "year": 2027,
             "start": "3/14",
             "end": "11/7"
+        }
+    ],
+    "lightConfig": [
+        {
+            "time": {
+                "sunsetDelta": -30
+            },
+            "light": {
+                "temp": 4000,
+                "brightness": 100
+            }
+        },
+        {
+            "time": {
+                "sunsetDelta": 0
+            },
+            "light": {
+                "temp": 4000,
+                "brightness": 100
+            }
+        },
+        {
+            "time": {
+                "sunsetDelta": 60
+            },
+            "light": {
+                "temp": 3200,
+                "brightness": 100
+            }
+        },
+        {
+            "time": {
+                "exact": "21:30"
+            },
+            "light": {
+                "temp": 3200,
+                "brightness": 100
+            }
+        },
+        {
+            "time": {
+                "exact": "22:00"
+            },
+            "light": {
+                "temp": 2700,
+                "brightness": 80
+            }
+        },
+        {
+            "time": {
+                "exact": "23:00"
+            },
+            "light": {
+                "temp": 2700,
+                "brightness": 10
+            }
         }
     ]
 }
