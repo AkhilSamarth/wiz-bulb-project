@@ -1,6 +1,14 @@
 import argparse
+import logging
+import logging.handlers
 
 import controller
+
+
+LOGFILE = "logs/wiz-bulb-project.log"
+LOGLEVEL = logging.INFO
+
+logger = logging.getLogger(__name__)
 
 
 def parse_args() -> dict:
@@ -15,8 +23,25 @@ def parse_args() -> dict:
     return vars(parser.parse_args())
 
 
+def config_log():
+    logging.basicConfig(
+        handlers=[
+            logging.handlers.TimedRotatingFileHandler(
+                filename=LOGFILE,
+                when="midnight",
+                backupCount=3
+            )
+        ],
+        level=LOGLEVEL,
+        format="[%(asctime)s] %(levelname)s - %(filename)s:%(lineno)s :: %(message)s"
+    )
+
+
 def main():
     args = parse_args()
+    config_log()
+
+    logger.info(f"Starting program with args: {args}")
 
     if args["bulbs_off"]:
         controller.set_state(False)
