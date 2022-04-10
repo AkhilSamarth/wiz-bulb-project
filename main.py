@@ -51,6 +51,10 @@ def main():
         controller.set_temp_and_brightness(temp=args["temp"], brightness=args["brightness"])
     elif args["auto_set"]:
         controller.set_bulb_based_on_timeline()
+    else:
+        logger.warning("No action performed, check args")
+
+    logger.info("End of program")
 
 
 if __name__ == "__main__":

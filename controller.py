@@ -1,6 +1,11 @@
 """Functions for controlling bulbs."""
+import logging
+
 import dt_utils
 import network
+
+
+logger = logging.getLogger(__name__)
 
 
 def _constrain_value(value, min, max) -> int:
@@ -25,6 +30,8 @@ def _construct_set_payload(params: dict) -> dict:
 
 
 def set_temp_and_brightness(temp: int, brightness: int) -> None:
+    logger.info(f"Setting temp and brightness: temp={temp}, brightness={brightness}")
+
     temp = _constrain_value(temp, 2200, 6000)
     brightness = _constrain_value(brightness, 10, 100)
 
@@ -39,6 +46,8 @@ def set_temp_and_brightness(temp: int, brightness: int) -> None:
 
 
 def set_state(state: bool) -> None:
+    logger.info(f"Setting bulb state: {state}")
+
     params = {
         "state": state
     }
@@ -49,6 +58,8 @@ def set_state(state: bool) -> None:
 
 def set_bulb_based_on_timeline() -> None:
     """Sets the lightbulbs based on the timeline config."""
+    logger.info("Setting bulb based on light timeline config")
+
     current_light_config = dt_utils.get_current_light_config()
 
     if current_light_config:

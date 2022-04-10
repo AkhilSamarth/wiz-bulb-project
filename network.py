@@ -1,9 +1,13 @@
 """File to interface with bulbs using sockets."""
 import json
+import logging
 import socket
 from typing import List, Tuple
 
 import config
+
+
+logger = logging.getLogger(__name__)
 
 
 def _get_socket() -> socket.socket:
@@ -28,6 +32,8 @@ def send_payload_to_bulbs(payload: dict) -> List[Tuple[str, dict]]:
 
     responses = []
 
+    logger.debug(f"Sending payload to bulbs: {payload}")
+
     for bulb_ip in config.get_bulb_ips():
         sock.sendto(json.dumps(payload).encode(), (bulb_ip, config.get_bulb_port()))
 
@@ -38,5 +44,7 @@ def send_payload_to_bulbs(payload: dict) -> List[Tuple[str, dict]]:
         responses.append((response_ip, response_json))
 
     sock.close()
+
+    logger.debug(f"Received responses: {responses}")
 
     return responses

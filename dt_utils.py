@@ -1,8 +1,12 @@
 """Utility functions relating to datetime logic."""
 import datetime as dt
+import logging
 from typing import List, Optional
 
 import config
+
+
+logger = logging.getLogger(__name__)
 
 
 def _get_dst_normalized_sunset_times() -> List[dt.datetime]:
@@ -61,6 +65,8 @@ def _get_sunset_time(date: dt.date) -> dt.time:
 
     if date_with_time >= dt_start_dt and date_with_time < dt_end_dt:
         sunset_time = sunset_time.replace(hour=sunset_time.hour+1)
+
+    logging.debug(f"Returning approximate sunset time for date={date}, sunset_time={sunset_time}")
 
     return sunset_time
 
@@ -138,7 +144,11 @@ def get_current_light_config() -> Optional[dict]:
     bucket_temp_delta = bucket_end["temp"] - bucket_start["temp"]
     bucket_brightness_delta = bucket_end["brightness"] - bucket_start["brightness"]
 
-    return {
+    current_light_config = {
         "temp": int(bucket_temp_delta * interp_factor + bucket_start["temp"]),
         "brightness": int(bucket_brightness_delta * interp_factor + bucket_start["brightness"])
     }
+
+    logger.debug(f"Returning current light config for current_time={current_time}, current_light_config={current_light_config}")
+
+    return current_light_config
