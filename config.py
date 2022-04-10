@@ -1,6 +1,11 @@
 import datetime as dt
 import json
+import logging
+import sys
 from typing import List
+
+
+logger = logging.getLogger(__name__)
 
 
 with open("config.json") as f:
@@ -16,7 +21,9 @@ def _get_current_year_dst_record() -> dict:
         if record["year"] == current_year:
             return record
 
-    raise Exception(f"Missing DST config for current year: {current_year}")
+    logger.error(f"Missing DST config for current year={current_year}, stopping")
+
+    sys.exit(1)
 
 
 def get_bulb_ips() -> List[str]:
